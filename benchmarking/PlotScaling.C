@@ -12,7 +12,7 @@ static const std::vector<int> plotColors = { kGray, kBlue, kRed, kViolet, kOrang
 
 int getColor( int index ) {
   int trueIndex = index % plotColors.size() ;
-  int colorShift = (index / plotColors.size() ) + 1 ;
+  int colorShift = (index / plotColors.size() ) + 2 ;
   return plotColors[ trueIndex ] + colorShift ;
 }
 
