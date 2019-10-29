@@ -107,6 +107,11 @@ else
   triggerUnpackingStr="notrig"
 fi
 
+if [ "${executable}" == "Marlin" ]
+then
+  cores=1
+fi
+
 output="MarlinMTBenchmarking_Lazy.${lazyUnpackStr}_Trigger.${triggerUnpackingStr}_Sigma.${sigmapercent}.txt"
 
 if [ -f ${output} ]
