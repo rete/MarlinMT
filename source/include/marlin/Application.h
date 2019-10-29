@@ -8,6 +8,7 @@
 #include <marlin/GeometryManager.h>
 #include <marlin/LoggerManager.h>
 #include <marlin/RandomSeedManager.h>
+#include <marlin/Utils.h>
 
 namespace EVENT {
   class LCEvent ;
@@ -222,6 +223,8 @@ namespace marlin {
     ConditionsMap              _conditions {} ;
     ///< Whether the currently pushed event is the first one
     bool                       _isFirstEvent {true} ;
+    /// The start time of the application
+    ClockScope                 _appTimeScope {"Application total time"} ;
   };
 
 } // end namespace marlin
