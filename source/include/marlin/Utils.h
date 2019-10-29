@@ -12,6 +12,7 @@
 
 // -- marlin headers
 #include <marlin/Exceptions.h>
+#include <marlin/Logging.h>
 
 namespace marlin {
 
@@ -102,6 +103,41 @@ namespace marlin {
         timediff = clock::time_difference<unit>(start, now) ;
       }
     }
+  };
+  
+  //--------------------------------------------------------------------------
+  //--------------------------------------------------------------------------
+  
+  /**
+   *  @brief  ClockScope class
+   *          A little utility to print total from scope object creation till
+   *          destruction time. Allow short construct to measure object lifetime
+   *          if declared as member object as:
+   *  @code{cpp} 
+   *  class MyClass {
+   *    ClockScope     _totalTimeScope {"Total lifetime of object of MyClass"} ;
+   *  };
+   *  @endcode
+   */
+  class ClockScope {
+  public:
+    /// Constructor
+    ClockScope( const std::string &prefix ) :
+      _prefix(prefix) {
+      /* nop */
+    }
+
+    /// Destructor
+    ~ClockScope() {
+      auto totalTime = clock::elapsed_since( _startTime ) ;
+      streamlog_out( MESSAGE ) << _prefix << ": " << totalTime << " s" << std::endl ;
+    }
+    
+  private:
+    /// The scope start time
+    clock::time_point     _startTime {clock::now()} ;
+    /// The prefix message before the total time is printed out
+    const std::string     _prefix ;
   };
 
   //--------------------------------------------------------------------------
