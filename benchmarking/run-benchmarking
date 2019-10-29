@@ -45,7 +45,7 @@ then
   exit 1
 fi
 
-OPTS=`getopt -o h -l mincores:,maxcores:,mincrunch:,maxcrunch:,crunchstep:,sigmacrunch:,inputfile:,lazy,trigger,help -n 'parse-options' -- "$@"`
+OPTS=`getopt -o h -l mincores:,maxcores:,mincrunch:,maxcrunch:,crunchstep:,sigmacrunch:,inputfile:,nrecords:,lazy,trigger,sequential,help -n 'parse-options' -- "$@"`
 eval set -- "$OPTS"
 
 mincores=2
