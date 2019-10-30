@@ -6,6 +6,7 @@ struct Entry {
   double          _serialTime {0.} ;
   double          _parallelTime {0.} ;
   double          _speedup {0.} ;
+  double          _appTotalTime {0} ;
 };
 
 static const std::vector<int> plotColors = { kGray, kBlue, kRed, kViolet, kOrange, kGreen, kOrange, kAzure } ; 
@@ -17,33 +18,47 @@ int getColor( int index ) {
 }
 
 
-void PlotScaling( const std::string &fname, const std::string &title = "", bool save = false ) {
+void PlotScaling( const std::string &seq_fname, const std::string &mt_fname, const std::string &title = "", bool save = false ) {
 
+  std::ifstream seq_file ( seq_fname ) ;
+  std::ifstream mt_file ( mt_fname ) ;
 
-  std::ifstream file ( fname ) ;
-
-  if( not file ) {
-    throw std::runtime_error( "Input file is invalid" ) ;
+  if( (not seq_file) ) {
+    throw std::runtime_error( "Seq input files is invalid!" ) ;
+  }
+  
+  if( (not mt_file) ) {
+    throw std::runtime_error( "MT input files is invalid!" ) ;
   }
 
+  std::map<std::size_t, Entry> seqEntryMap ;
   std::map<std::size_t, std::vector<Entry>>   coreToEntryMap ;
   std::map<std::size_t, std::vector<Entry>>   crunchTimeToEntryMap ;
 
-  while( not file.eof() ) {
 
+  while( not seq_file.eof() ) {
     std::string line ;
-    std::getline( file, line ) ;
-
+    std::getline( seq_file, line ) ;
     if( line.empty() ) {
       break ;
     }
-
     std::stringstream ssline ( line ) ;
     Entry entry ;
-    
-    ssline >> entry._ncores >> entry._crunchTime >> entry._crunchSigma >> entry._serialTime >> entry._parallelTime >> entry._speedup ;
-    std::cout << "Parsed entry: " << line << std::endl ;
+    ssline >> entry._ncores >> entry._crunchTime >> entry._crunchSigma >> entry._appTotalTime ;
+    std::cout << "Seq: parsed entry: " << line << std::endl ;
+    seqEntryMap[ entry._crunchTime ] = entry ;
+  }
 
+  while( not mt_file.eof() ) {
+    std::string line ;
+    std::getline( mt_file, line ) ;
+    if( line.empty() ) {
+      break ;
+    }
+    std::stringstream ssline ( line ) ;
+    Entry entry ;
+    ssline >> entry._ncores >> entry._crunchTime >> entry._crunchSigma >> entry._serialTime >> entry._parallelTime >> entry._speedup >> entry._appTotalTime ;
+    std::cout << "MT: parsed entry: " << line << std::endl ;
     coreToEntryMap[ entry._ncores ].push_back( entry ) ;
     crunchTimeToEntryMap[ entry._crunchTime ].push_back( entry ) ;
   }
@@ -71,10 +86,13 @@ void PlotScaling( const std::string &fname, const std::string &title = "", bool 
     crunchTimeGraph->SetLineWidth( 3 ) ;
     crunchTimeGraph->SetLineColor( getColor(color) ) ;
     crunchTimeGraph->SetMarkerStyle( 0 ) ;
+    
+    auto &seqEntry = seqEntryMap[ ctIter.first ] ;
 
     // loop over ncores for a given crunch time
     for( unsigned int i=0 ; i<ctIter.second.size() ; i++ ) {
       auto &entry = ctIter.second.at( i ) ;
+      auto speedup = entry._appTotalTime / seqEntry._appTotalTime ;
       crunchTimeGraph->SetPoint( i, entry._ncores, entry._speedup ) ;
       maxCores = std::max( maxCores, entry._ncores ) ;
     }
@@ -120,7 +138,7 @@ void PlotScaling( const std::string &fname, const std::string &title = "", bool 
   speedupVsCoreCanvas->GetFrame()->SetFillColor( 19 ) ;
 
   if( save ) {
-    speedupVsCoreCanvas->SaveAs( (fname + "SpeedupVSNCores.pdf").c_str() ) ;
+    speedupVsCoreCanvas->SaveAs( (mt_fname + "SpeedupVSNCores.pdf").c_str() ) ;
   }
 
 }
