@@ -29,17 +29,17 @@ ENDIF()
 
 # required packages
 FIND_PACKAGE( Threads REQUIRED )
+FIND_PACKAGE( TinyXML REQUIRED )
 
-# export Marlin_DEPENDS_INCLUDE_DIRS to MarlinConfig.cmake
-SET( Marlin_DEPENDS_INCLUDE_DIRS ${streamlog_INCLUDE_DIRS} )
-SET( Marlin_DEPENDS_LIBRARY_DIRS ${streamlog_LIBRARY_DIRS} )
-SET( Marlin_DEPENDS_LIBRARIES ${streamlog_LIBRARIES} )
+SET( Marlin_DEPENDS_INCLUDE_DIRS ${streamlog_INCLUDE_DIRS} ${TinyXML_INCLUDE_DIRS} )
+SET( Marlin_DEPENDS_LIBRARIES ${streamlog_LIBRARIES} ${TinyXML_LIBRARIES} )
 
 INCLUDE_DIRECTORIES( SYSTEM ${Marlin_DEPENDS_INCLUDE_DIRS} )
 
-OPTION( MARLIN_BOOK  "Set to ON to build Marlin with book store functionality (requires ROOT7 !)" OFF )
-OPTION( MARLIN_DD4HEP "Set to ON to build Marlin with DD4hep" ON )
-OPTION( MARLIN_LCIO   "Set to ON to build Marlin with LCIO support" ON )
+OPTION( MARLIN_BOOK    "Set to ON to build Marlin with book store functionality (requires ROOT7 !)" OFF )
+OPTION( MARLIN_DD4HEP  "Set to ON to build Marlin with DD4hep" ON )
+OPTION( MARLIN_LCIO    "Set to ON to build Marlin with LCIO support" ON )
+OPTION( MARLIN_GEAR    "Set to ON to build Marlin with Gear" OFF )
 
 IF( MARLIN_BOOK )
   LIST( APPEND ROOT_COMPONENTS Core Hist RIO )
@@ -58,6 +58,7 @@ IF( ROOT_COMPONENTS )
   # check ROOT requirements
   INCLUDE( MarlinCheckROOTRequirements )
   MarlinCheckROOTRequirements()
+  INCLUDE_DIRECTORIES( SYSTEM ${ROOT_INCLUDE_DIRS} )
 ENDIF()
 
 
@@ -68,20 +69,13 @@ ENDIF()
 #     ENDIF()
 # ENDIF()
 
-OPTION( MARLIN_GEAR "Set to ON to build Marlin with Gear" OFF )
-IF( MARLIN_GEAR )
-    FIND_PACKAGE( GEAR REQUIRED )
-    IF( NOT GEAR_FOUND )
-        MESSAGE( SEND_ERROR "GEAR not found. Please set MARLIN_GEAR to OFF or GEAR_DIR=/path/to/GEAR" )
-    ENDIF()
-ENDIF()
 
-
-FOREACH( pkg GEAR DD4hep ROOT )
-    IF( ${pkg}_FOUND )
-        INCLUDE_DIRECTORIES( SYSTEM ${${pkg}_INCLUDE_DIRS} )
-    ENDIF()
-ENDFOREACH()
+# IF( MARLIN_GEAR )
+#     FIND_PACKAGE( GEAR REQUIRED )
+#     IF( NOT GEAR_FOUND )
+#         MESSAGE( SEND_ERROR "GEAR not found. Please set MARLIN_GEAR to OFF or GEAR_DIR=/path/to/GEAR" )
+#     ENDIF()
+# ENDIF()
 
 
 OPTION( MARLIN_GUI "Set to ON to build Marlin GUI" OFF )
