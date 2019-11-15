@@ -9,7 +9,7 @@ INCLUDE_DIRECTORIES( BEFORE "${PROJECT_BINARY_DIR}" ) # generated MarlinConfig.h
 
 
 # install header files
-FILE( GLOB marlin_headers RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" ./include/marlin/*.h ./tinyxml/include/marlin/*.h ./include/marlin/concurrency/*.h )
+FILE( GLOB marlin_headers RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" include/marlin/*.h include/marlin/concurrency/*.h )
 INSTALL( FILES ${marlin_headers} DESTINATION include/marlin )
 
 IF( ROOT_FOUND )
@@ -27,24 +27,13 @@ ENDIF()
 AUX_SOURCE_DIRECTORY( ./src library_sources )
 AUX_SOURCE_DIRECTORY( ./src/plugins library_sources )
 AUX_SOURCE_DIRECTORY( ./src/concurrency library_sources )
-AUX_SOURCE_DIRECTORY( ./tinyxml/src tinyxml_sources )
-IF( NOT MARLIN_GEAR )
-    LIST( REMOVE_ITEM library_sources ./src/plugins/GearGeometry.cc )
-ENDIF()
-INCLUDE_DIRECTORIES( SYSTEM tinyxml/include )
 
 # create library
 ADD_SHARED_LIBRARY( Marlin ${library_sources} )
-
-ADD_SHARED_LIBRARY( MarlinXML ${tinyxml_sources} )
-SET_TARGET_PROPERTIES( MarlinXML  PROPERTIES COMPILE_FLAGS "-w" )
-INSTALL_SHARED_LIBRARY( MarlinXML DESTINATION lib )
-
-INSTALL_SHARED_LIBRARY( Marlin DESTINATION lib )
-TARGET_LINK_LIBRARIES( Marlin ${CMAKE_DL_LIBS} MarlinXML ${Marlin_DEPENDS_LIBRARIES}
+TARGET_LINK_LIBRARIES( Marlin ${CMAKE_DL_LIBS} ${Marlin_DEPENDS_LIBRARIES}
   ## Note: it is not a problem if any variables is empty because package not found
-  ${CMAKE_THREAD_LIBS_INIT} ${DD4hep_LIBRARIES} ${DD4hep_COMPONENT_LIBRARIES} ${ROOT_LIBRARIES}  )
-
+  ${CMAKE_THREAD_LIBS_INIT} ${ROOT_LIBRARIES}  )
+INSTALL_SHARED_LIBRARY( Marlin DESTINATION lib )
 
 # ----- MarlinShellCompletion executable ----------------------------------------------------
 ADD_EXECUTABLE( bin_MarlinShellCompletion ./main/MarlinShellCompletion.cc )
@@ -82,6 +71,11 @@ ENDIF()
 # ----- MarlinDD4hep ------------------------------------------------------------
 IF( MARLIN_DD4HEP )
     ADD_SUBDIRECTORY( dd4hep )
+ENDIF()
+
+# ----- MarlinGear ------------------------------------------------------------
+IF( MARLIN_GEAR )
+    ADD_SUBDIRECTORY( gear )
 ENDIF()
 
 # ----------------------------------------------------------------------------
