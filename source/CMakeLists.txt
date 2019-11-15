@@ -28,9 +28,6 @@ AUX_SOURCE_DIRECTORY( ./src library_sources )
 AUX_SOURCE_DIRECTORY( ./src/plugins library_sources )
 AUX_SOURCE_DIRECTORY( ./src/concurrency library_sources )
 AUX_SOURCE_DIRECTORY( ./tinyxml/src tinyxml_sources )
-IF( NOT MARLIN_DD4HEP )
-    LIST( REMOVE_ITEM library_sources ./src/plugins/DD4hepGeometry.cc )
-ENDIF()
 IF( NOT MARLIN_GEAR )
     LIST( REMOVE_ITEM library_sources ./src/plugins/GearGeometry.cc )
 ENDIF()
@@ -81,6 +78,12 @@ INSTALL( TARGETS bin_MarlinMT DESTINATION bin )
 IF( MARLIN_LCIO )
     ADD_SUBDIRECTORY( lcio )
 ENDIF()
+
+# ----- MarlinDD4hep ------------------------------------------------------------
+IF( MARLIN_DD4HEP )
+    ADD_SUBDIRECTORY( dd4hep )
+ENDIF()
+
 # ----------------------------------------------------------------------------
 
 # ----- MarlinGUI ------------------------------------------------------------

@@ -61,12 +61,12 @@ IF( ROOT_COMPONENTS )
 ENDIF()
 
 
-IF( MARLIN_DD4HEP )
-    FIND_PACKAGE( DD4hep COMPONENTS DDRec DDParsers REQUIRED )
-    IF( NOT DD4hep_FOUND )
-        MESSAGE( SEND_ERROR "DD4hep not found. Please set MARLIN_DD4HEP to OFF or DD4hep_DIR=/path/to/DD4hep" )
-    ENDIF()
-ENDIF()
+# IF( MARLIN_DD4HEP )
+#     FIND_PACKAGE( DD4hep COMPONENTS DDRec DDParsers REQUIRED )
+#     IF( NOT DD4hep_FOUND )
+#         MESSAGE( SEND_ERROR "DD4hep not found. Please set MARLIN_DD4HEP to OFF or DD4hep_DIR=/path/to/DD4hep" )
+#     ENDIF()
+# ENDIF()
 
 OPTION( MARLIN_GEAR "Set to ON to build Marlin with Gear" OFF )
 IF( MARLIN_GEAR )
