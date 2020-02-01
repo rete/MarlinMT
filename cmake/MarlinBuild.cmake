@@ -68,6 +68,11 @@ marlin_option(
   CACHE 
   POSSIBLE_VALUES root6 root7 dummy
 )
+marlin_option(
+  NAME MARLIN_PYTHON
+  VALUE OFF
+  DOC "Set to ON to build the python interface (requires Boost.python)"
+)
 
 # List of compiler we want to compile Marlin with.
 # The list is purified using MarlinSupportedCompilerFlags
