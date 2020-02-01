@@ -29,5 +29,6 @@ if( MARLIN_GUI )
   add_subdirectory( gui )
 endif()
 
-
-
+if( MARLIN_PYTHON )
+  add_subdirectory( python )
+endif()
