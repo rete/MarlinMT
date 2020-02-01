@@ -64,9 +64,9 @@ namespace marlin {
 
   std::ostream& operator<< (  std::ostream& s,  const StringParameters& p ) {
     for( auto m : p._map ) {
-      s << "      " << m.first << ": " ;
+      s << "==> " << m.first << ": " ;
       for( auto val : m.second ) {
-        s << "[" << val << "]  " ;
+        s << "[" << val << "] " ;
       }
       s << std::endl ;
     }
