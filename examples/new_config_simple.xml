@@ -1,0 +1,43 @@
+
+
+<marlin>
+  
+  <!-- Algorithm scheduling -->
+  <scheduler type="PEPScheduler">
+    <property name="NWorkers"> 10 </property>
+  </scheduler>
+  
+  <!-- Logging component -->
+  <logging>
+    <property name="Verbosity"> DEBUG </property>
+    <property name="ColoredConsole"> true </property>
+    <property name="LogFileName"> marlin.log </property>
+  </logging>
+  
+  <!-- Geometry (none) -->
+  <geometry type="EmptyGeometry"/>
+  
+  <!-- Input data source. In this case LCIO -->
+  <datasource type="LCIO">
+    <parameter name="LCIOInputFiles"> test/testmarlin/simjob.slcio </parameter>
+    <parameter name="MaxRecordNumber" value="0"/>
+    <parameter name="SkipNEvents" value="0"/>
+  </datasource>
+  
+  <!-- Properties and algorithm order are defined in the same place (no execute section) -->
+  <algorithms>
+    <!-- Declare an algorithm without name -->
+    <!-- The name is optional ! -->
+    <algorithm type="SimpleAlgo" name="MySimpleAlgo">
+      <!-- Input property defines an expected input from the event (e.g LCIO collection) -->
+      <input type="SimCalorimeterHit" name="InputHitCollection"> SiWECAL </input>
+      <!-- Output property defines an expected output in the event (e.g LCIO collection) -->
+      <output type="CalorimeterHit" name="DigitHitCollection"> SiWECAL_Digit </output>
+      <!-- Simple properties -->
+      <property name="Threshold"> 0.01 </property>
+      <property name="CalibrationConstant"> 2.3 </property>
+    </algorithm>
+  </algorithms>
+  
+</marlin>
+
