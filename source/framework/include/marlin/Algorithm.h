@@ -1,8 +1,12 @@
 #pragma once
 
+// -- std headers
 #include <map>
 #include <string>
 #include <optional>
+
+// -- marlin headers
+#include <marlin/Property.h>
 
 namespace marlin {
   
@@ -13,7 +17,7 @@ namespace marlin {
    *
    *  @author: Remi Ete
    */
-  class Algorithm {    
+  class Algorithm : public Configurable {
   public:
     /**
      *  @brief  ERuntimeOption enumerator.
@@ -24,7 +28,7 @@ namespace marlin {
       eCritical,    /// Whether the algorithm has to be executed in a critical section
       eCopy         /// Whether the algorithm must be cloned in each thread worker (MT mode)
     };
-    using RuntimeOptions = std::map<RuntimeOption, bool> ;
+    using RuntimeOptions = std::map<ERuntimeOption, bool> ;
     
   public:
     // Default constructor. No copy
@@ -104,7 +108,7 @@ namespace marlin {
     /**
      *  @brief  Set the algorithm description
      */
-    inline void setDescription( const std::string &desc ) const {
+    inline void setDescription( const std::string &desc ) {
       _description = desc ;
     }
 
@@ -115,7 +119,10 @@ namespace marlin {
      */
     inline std::optional<bool> runtimeOption( ERuntimeOption opt ) const {
       auto iter = _runtimeOptions.find( opt ) ;
-      return (_runtimeOptions.end() == iter) ? std::nullopt : iter.second ;
+      if( _runtimeOptions.end() == iter ) {
+        return  std::nullopt ;
+      }
+      return iter->second ;
     }
     
     /**
@@ -149,7 +156,7 @@ namespace marlin {
     
   private:
     /// The algorithm type
-    const std::string                        _type ;
+    std::string                              _type ;
     /// The algorithm name
     std::string                              _name {""} ;
     /// The algorithm description
