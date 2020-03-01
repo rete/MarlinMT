@@ -15,9 +15,13 @@
 
 namespace marlin {
   
+  class Algorithm ;
+  class AlgorithmTool ;
+  
+  namespace experimental {
+  
   template <typename T>
   class Property ;
-  
   
   enum class EPropertyType {
     eSimple,              /// Simple property
@@ -125,8 +129,8 @@ namespace marlin {
     }
     
   private:
-    std::string                      _name {} ;
     EPropertyType                    _type {} ;
+    std::string                      _name {} ;
     std::string                      _description {} ;
     std::function<std::string()>     _typeFunction {} ;
     std::function<std::string()>     _strFunction {} ;
@@ -321,9 +325,6 @@ namespace marlin {
   //--------------------------------------------------------------------------
   //--------------------------------------------------------------------------
   
-  class Algorithm ;
-  class AlgorithmTool ;
-  
   class AlgorithmProperty : public PropertyBase<std::string> {
   public:
     AlgorithmProperty( Algorithm *alg, const std::string &key, const std::string &desc ) ;
@@ -352,5 +353,7 @@ namespace marlin {
   private:
     std::weak_ptr<AlgorithmTool>     _tool {} ;
   };
+
+  }
 
 } // end namespace marlin
