@@ -389,15 +389,27 @@ namespace marlin {
     //--------------------------------------------------------------------------
     
     template <typename T>
-    inline std::vector<std::string> to_string( const std::vector<T> &values ) {
-      std::vector<std::string> result( values.size() ) ;
-      std::transform( values.begin(), values.end(), std::back_inserter( result ), to_string<T> ) ;
-      return result ;
+    inline std::string to_string( const std::vector<T> &input ) {
+      std::stringstream ss ;
+      for( auto iter = input.begin() ; iter != input.end() ; ++iter ) {
+        ss << typeToString( *iter ) ;
+        if( std::next(iter) != input.end() ) {
+          ss << " " ;
+        }
+      }
+      return ss.str() ;
     }
     
     template <>
-    inline std::vector<std::string> to_string( const std::vector<std::string> &values ) {
-      return values ;
+    inline std::string to_string( const std::vector<std::string> &input ) {
+      std::stringstream ss ;
+      for( auto iter = input.begin() ; iter != input.end() ; ++iter ) {
+        ss << *iter ;
+        if( std::next(iter) != input.end() ) {
+          ss << " " ;
+        }
+      }
+      return ss.str() ;
     }
     
     //--------------------------------------------------------------------------
