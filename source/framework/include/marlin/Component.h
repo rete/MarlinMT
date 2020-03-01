@@ -1,10 +1,12 @@
 #pragma once
 
 #include <marlin/Logging.h>
+#include <marlin/Property.h>
 
 namespace marlin {
   
   class Application ;
+  using Configurable = experimental::Configurable ;
   
   /**
    *  @brief  Component class.
@@ -20,46 +22,55 @@ namespace marlin {
     using LoggerPtr = Logging::Logger ;
     
   public:
-    /// Default constructor
-    Component() = default ;
-    
+    /// No default constructor
+    Component() = delete ;
+    /// No copy or assignement
+    Component(const Component &) = delete ;
+    Component &operator=(const Component &) = delete ;
+
     /// Default destructor
     virtual ~Component() = default ;
     
-    /**
-     *  @brief  Get the application in which the component is registered
-     */
-    inline const Application &application() const {
-      if( nullptr == _application ) {
-        MARLIN_THROW( "Application not set" ) ;
-      }
-      return *_application ;
-    }
+    /// Constructor with component name
+    Component( const std::string &name ) ;
     
     /**
      *  @brief  Get the application in which the component is registered
      */
-    inline Application &application() {
-      if( nullptr == _application ) {
-        MARLIN_THROW( "Application not set" ) ;
-      }
-      return *_application ;
-    }
+    const Application &application() const ;
+    
+    /**
+     *  @brief  Get the application in which the component is registered
+     */
+    Application &application() ;
     
     template <class T>
     inline Logging::StreamType log() const {
       return _logger->log<T>() ;
     }
     
-    inline Logging::StreamType debug() const {
-      return log<loglevel::DEBUG>() ;
+    /// Shortcut for log<DEBUG>()
+    Logging::StreamType debug() const ;
+    
+    /// Shortcut for log<MESSAGE>()
+    Logging::StreamType message() const ;
+    
+    /// Shortcut for log<WARNING>()
+    Logging::StreamType warning() const ;
+    
+    /// Shortcut for log<ERROR>()
+    Logging::StreamType error() const ;
+    
+    inline const std::string &componentName() const {
+      return _componentName ;
     }
     
   private:
     /// Setup the component. Called by the application before initialization
-    inline void setup( Application *app ) ;
+    void setup( Application *app ) ;
     
   private:
+    std::string              _componentName {} ;
     Application             *_application {nullptr} ;
     LoggerPtr                _logger {nullptr} ;
   };
