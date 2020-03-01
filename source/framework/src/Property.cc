@@ -5,6 +5,8 @@
 
 namespace marlin {
   
+  namespace experimental {  
+  
   AlgorithmProperty::AlgorithmProperty( Algorithm *alg, const std::string &key, const std::string &desc ) :
     PropertyBase<std::string>( *alg, EPropertyType::eAlgorithm, key, desc ) {
     // TODO register/create an algorithm 
@@ -22,4 +24,6 @@ namespace marlin {
     // TODO register/create algorithm tool
   }
   
+  }
+ 
 }
