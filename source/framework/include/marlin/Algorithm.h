@@ -6,7 +6,7 @@
 #include <optional>
 
 // -- marlin headers
-#include <marlin/Property.h>
+#include <marlin/Component.h>
 
 namespace marlin {
   
@@ -17,7 +17,7 @@ namespace marlin {
    *
    *  @author: Remi Ete
    */
-  class Algorithm : public Configurable {
+  class Algorithm : public Component {
   public:
     /**
      *  @brief  ERuntimeOption enumerator.
@@ -31,11 +31,21 @@ namespace marlin {
     using RuntimeOptions = std::map<ERuntimeOption, bool> ;
     
   public:
-    // Default constructor. No copy
-    Algorithm() = default ;
+    // No default constructor or copy
+    Algorithm() = delete ;
     Algorithm(const Algorithm &) = delete ;
     Algorithm &operator=(const Algorithm &) = delete ;
     virtual ~Algorithm() = default ;
+    
+    /**
+     *  @brief  Constructor with algorithm type
+     * 
+     *  @param  ty the algorithm type
+     */
+    Algorithm( const std::string &ty ) : 
+      Component( ty ) {
+      /* nop */
+    }
     
     /**
      *  @brief  Called once at initialization time by the application
@@ -88,7 +98,7 @@ namespace marlin {
      *  @brief  Get the algorithm type
      */
     inline const std::string &type() const {
-      return _type ;
+      return componentName() ;
     }
     
     /**
@@ -106,13 +116,6 @@ namespace marlin {
     }
 
     /**
-     *  @brief  Set the algorithm description
-     */
-    inline void setDescription( const std::string &desc ) {
-      _description = desc ;
-    }
-
-    /**
      *  @brief  Get an algorithm runtime option.
      *  
      *  @param  opt the runtime option
@@ -123,6 +126,14 @@ namespace marlin {
         return  std::nullopt ;
       }
       return iter->second ;
+    }
+    
+  protected:
+    /**
+     *  @brief  Set the algorithm description
+     */
+    inline void setDescription( const std::string &desc ) {
+      _description = desc ;
     }
     
     /**
@@ -137,15 +148,6 @@ namespace marlin {
     
   private:
     /**
-     *  @brief  Set the algorithm type
-     * 
-     *  @param  ty the algorithm type
-     */
-    inline void setType( const std::string &ty ) {
-      _type = ty ;
-    }
-    
-    /**
      *  @brief  Set the algorithm name
      * 
      *  @param  na the algorithm name
@@ -155,8 +157,6 @@ namespace marlin {
     }
     
   private:
-    /// The algorithm type
-    std::string                              _type ;
     /// The algorithm name
     std::string                              _name {""} ;
     /// The algorithm description
